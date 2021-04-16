@@ -1,11 +1,13 @@
 package webServiceTesting;
 
 
+import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
-public class Steps {
+
+public  class Steps {
 
   CreateUser createUser;
   String name, job;
@@ -25,7 +27,17 @@ public class Steps {
   public void setJob(String job) {
   }
 
-  @Then("^I validate my response is correct$")
-  public void validateMyResponseIsCorrect() {
+  @Then("^I validate my 1 response is \"([^\"]*)\"$")
+  public void validateMyResponseIsCorrect(int code) throws Throwable {
+	  int statusCode = createUser.getRequestSpecification()
+	  	.header("Content-Type", "application/json")
+	  	.body(createUser.buildBody())
+	  	.post().getStatusCode();
+			  	
+	  if(statusCode != code) {
+		  throw new PendingException();
+	  }
   }
+
+  
 }
